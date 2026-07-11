@@ -16,6 +16,7 @@
     --muted:#8B96A8;
     --cyan:#5EEAD4;
     --amber:#F5B942;
+    --coral:#FF8A65;
     --radius:10px;
   }
   *{box-sizing:border-box; margin:0; padding:0;}
@@ -31,7 +32,6 @@
   a{color:inherit; text-decoration:none;}
   ::selection{background:var(--cyan); color:#0B1220;}
 
-  /* Background grid texture */
   body::before{
     content:"";
     position:fixed; inset:0;
@@ -46,7 +46,7 @@
 
   .wrap{max-width:1000px; margin:0 auto; padding:0 24px; position:relative; z-index:1;}
 
-  /* ===== Nav (file tabs) ===== */
+  /* ===== Nav ===== */
   nav{
     position:sticky; top:0; z-index:50;
     background:rgba(11,18,32,0.9);
@@ -57,7 +57,9 @@
     display:flex; align-items:center; gap:2px;
     max-width:1000px; margin:0 auto; padding:0 16px;
     overflow-x:auto;
+    scrollbar-width:none;
   }
+  .tabbar::-webkit-scrollbar{display:none;}
   .tab{
     font-family:'JetBrains Mono', monospace;
     font-size:12.5px;
@@ -67,12 +69,14 @@
     white-space:nowrap;
     position:relative;
     transition:color 0.2s;
+    flex-shrink:0;
   }
   .tab:hover{color:var(--text);}
   .tab .dot{display:inline-block; width:6px; height:6px; border-radius:50%; margin-right:8px;}
   .tab.about .dot{background:#4FC3F7;}
   .tab.skills .dot{background:var(--amber);}
   .tab.project .dot{background:var(--cyan);}
+  .tab.upcoming .dot{background:var(--coral);}
   .tab.contact .dot{background:#B39DFF;}
   .tab.active{color:var(--text);}
   .tab.active::after{
@@ -118,7 +122,7 @@
     background:var(--panel-2);
     border-bottom:1px solid var(--border);
   }
-  .term-dot{width:11px; height:11px; border-radius:50%;}
+  .term-dot{width:11px; height:11px; border-radius:50%; flex-shrink:0;}
   .term-title{
     font-family:'JetBrains Mono', monospace;
     font-size:12px; color:var(--muted);
@@ -130,9 +134,9 @@
     font-size:15px;
     min-height:190px;
   }
-  .term-line{color:var(--muted); margin-bottom:6px;}
+  .term-line{color:var(--muted); margin-bottom:6px; min-height:1.4em;}
   .term-line .prompt{color:var(--cyan); margin-right:8px;}
-  .term-out{color:var(--text); font-weight:600; margin-bottom:18px; font-size:17px;}
+  .term-out{color:var(--text); font-weight:600; margin-bottom:18px; font-size:17px; min-height:1.4em;}
   .cursor{display:inline-block; width:8px; height:16px; background:var(--cyan); vertical-align:-3px; animation:blink 1s step-end infinite;}
   @keyframes blink{50%{opacity:0;}}
 
@@ -145,7 +149,9 @@
     font-family:'JetBrains Mono', monospace;
     font-size:12.5px;
     color:var(--text);
+    transition:border-color .2s, transform .2s;
   }
+  .stat-chip:hover{border-color:var(--cyan); transform:translateY(-2px);}
   .stat-chip b{color:var(--amber);}
 
   /* ===== About ===== */
@@ -158,26 +164,34 @@
     border-radius:var(--radius);
     padding:22px;
   }
-  .fact{display:flex; justify-content:space-between; padding:11px 0; border-bottom:1px dashed var(--border); font-size:14px;}
+  .fact{display:flex; justify-content:space-between; gap:12px; padding:11px 0; border-bottom:1px dashed var(--border); font-size:14px;}
   .fact:last-child{border-bottom:none;}
-  .fact span:first-child{color:var(--muted); font-family:'JetBrains Mono', monospace; font-size:12.5px;}
+  .fact span:first-child{color:var(--muted); font-family:'JetBrains Mono', monospace; font-size:12.5px; flex-shrink:0;}
   .fact span:last-child{color:var(--text); font-weight:600; text-align:right;}
 
-  /* ===== Skills (json styled) ===== */
-  .json-block{
+  /* ===== Skills (json styled, chip based) ===== */
+  .skills-grid{display:grid; gap:16px;}
+  .skill-cat{
     background:var(--panel);
     border:1px solid var(--border);
     border-radius:var(--radius);
-    padding:26px 28px;
-    font-family:'JetBrains Mono', monospace;
-    font-size:13.5px;
-    overflow-x:auto;
+    padding:18px 20px;
   }
-  .json-key{color:var(--amber);}
-  .json-str{color:var(--cyan);}
-  .json-punc{color:var(--muted);}
-  .json-line{margin-bottom:6px; white-space:pre-wrap; line-height:1.9;}
-  .indent{padding-left:24px;}
+  .skill-key{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12.5px; color:var(--amber);
+    margin-bottom:12px;
+  }
+  .skill-key::before{content:'"'; color:var(--muted);}
+  .skill-key::after{content:'":'; color:var(--muted);}
+  .skill-chips{display:flex; flex-wrap:wrap; gap:8px;}
+  .chip{
+    font-family:'JetBrains Mono', monospace; font-size:12px;
+    padding:6px 12px; border:1px solid var(--border); border-radius:6px;
+    color:var(--cyan); background:rgba(94,234,212,0.05);
+    transition:border-color .2s, transform .2s;
+  }
+  .chip:hover{border-color:var(--cyan); transform:translateY(-2px);}
 
   /* ===== Project ===== */
   .project-card{
@@ -187,7 +201,13 @@
     padding:36px;
     display:grid; grid-template-columns:1fr 260px; gap:40px; align-items:start;
   }
+  .upcoming-card{border-style:dashed; border-color:#3a3220;}
   .project-title{font-family:'JetBrains Mono', monospace; font-size:21px; font-weight:700; margin-bottom:6px;}
+  .status-badge{
+    font-family:'JetBrains Mono', monospace; font-size:10.5px; font-weight:600;
+    padding:4px 10px; border:1px solid var(--coral); color:var(--coral);
+    border-radius:999px; margin-left:10px; vertical-align:middle; white-space:nowrap;
+  }
   .project-sub{color:var(--muted); font-size:13.5px; margin-bottom:18px;}
   .tags{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:20px;}
   .tag{
@@ -198,7 +218,7 @@
   .bullets li::before{content:"▸"; color:var(--cyan); position:absolute; left:0;}
 
   .phone{
-    width:220px; height:440px;
+    width:220px; max-width:100%; height:440px;
     background:var(--panel-2);
     border:6px solid #1a2438;
     border-radius:32px;
@@ -210,6 +230,14 @@
   .bubble{border-radius:12px; padding:9px 12px; font-size:11px; margin-bottom:8px; max-width:80%; font-family:'Manrope',sans-serif;}
   .bubble.bot{background:rgba(94,234,212,0.12); border:1px solid rgba(94,234,212,0.3); color:var(--cyan);}
   .bubble.user{background:rgba(245,185,66,0.1); border:1px solid rgba(245,185,66,0.28); color:var(--amber); margin-left:auto;}
+
+  .doc-mock{background:rgba(255,255,255,0.03); border:1px solid var(--border); border-radius:10px; padding:16px; height:calc(100% - 20px);}
+  .doc-line{height:8px; background:rgba(232,236,241,0.14); border-radius:4px; margin-bottom:10px;}
+  .doc-line.short{width:60%;}
+  .doc-badge{
+    display:inline-block; margin-top:18px; font-family:'JetBrains Mono', monospace; font-size:11px;
+    color:var(--coral); border:1px solid var(--coral); padding:4px 10px; border-radius:6px;
+  }
 
   .timeline{margin-top:32px; border-top:1px solid var(--border); padding-top:28px;}
   .t-item{display:grid; grid-template-columns:90px 1fr; gap:18px; margin-bottom:22px;}
@@ -236,9 +264,10 @@
   .contact-links{display:flex; flex-wrap:wrap; gap:12px; margin-top:8px;}
   .clink{
     border:1px solid var(--border); border-radius:8px; padding:10px 16px;
-    color:var(--text); font-size:13px; transition:border-color 0.2s, color 0.2s;
+    color:var(--text); font-size:13px; transition:border-color 0.2s, color 0.2s, transform .2s;
+    display:inline-block;
   }
-  .clink:hover{border-color:var(--cyan); color:var(--cyan);}
+  .clink:hover{border-color:var(--cyan); color:var(--cyan); transform:translateY(-2px);}
 
   footer{padding:30px 0; text-align:center; color:var(--muted); font-family:'JetBrains Mono', monospace; font-size:12px;}
 
@@ -248,8 +277,14 @@
   @media (max-width:760px){
     .about-grid{grid-template-columns:1fr;}
     .project-card{grid-template-columns:1fr;}
-    .phone{margin-top:20px;}
+    .phone{margin-top:24px; width:180px; height:360px;}
     section{padding:64px 0;}
+    .term-body{font-size:13px;}
+    .term-out{font-size:15px;}
+  }
+  @media (max-width:420px){
+    .tab{padding:12px 11px; font-size:11.5px;}
+    .wrap{padding:0 16px;}
   }
 
   @media (prefers-reduced-motion: reduce){
@@ -265,6 +300,7 @@
     <a href="#about" class="tab about"><span class="dot"></span>about.dart</a>
     <a href="#skills" class="tab skills"><span class="dot"></span>skills.json</a>
     <a href="#project" class="tab project"><span class="dot"></span>project.dart</a>
+    <a href="#upcoming" class="tab upcoming"><span class="dot"></span>upcoming.dart</a>
     <a href="#contact" class="tab contact"><span class="dot"></span>contact.md</a>
   </div>
 </nav>
@@ -278,13 +314,13 @@
         <div class="term-dot" style="background:#27C93F;"></div>
         <div class="term-title">shahzaib@portfolio: ~</div>
       </div>
-      <div class="term-body">
-        <div class="term-line"><span class="prompt">$</span>whoami</div>
-        <div class="term-out">Shahzaib Naveed</div>
-        <div class="term-line"><span class="prompt">$</span>role --current</div>
-        <div class="term-out">Flutter & Mobile App Developer</div>
-        <div class="term-line"><span class="prompt">$</span>status</div>
-        <div class="term-line" style="color:var(--text);">Open to Junior Software Engineer / Flutter Developer roles<span class="cursor"></span></div>
+      <div class="term-body" id="termBody">
+        <div class="term-line"><span class="prompt">$</span><span data-text="whoami"></span></div>
+        <div class="term-out" data-text="Shahzaib Naveed"></div>
+        <div class="term-line"><span class="prompt">$</span><span data-text="role --current"></span></div>
+        <div class="term-out" data-text="Flutter & Mobile App Developer"></div>
+        <div class="term-line"><span class="prompt">$</span><span data-text="status"></span></div>
+        <div class="term-line" style="color:var(--text);"><span data-text="Open to Junior Software Engineer / Flutter Developer roles"></span><span class="cursor" id="heroCursor"></span></div>
       </div>
     </div>
     <div class="stat-row">
@@ -322,16 +358,49 @@
   <div class="wrap">
     <div class="eyebrow">skills.json</div>
     <h2 class="reveal">Toolbox</h2>
-    <div class="json-block reveal">
-<div class="json-line"><span class="json-punc">{</span></div>
-<div class="json-line indent"><span class="json-key">"languages"</span><span class="json-punc">:</span> <span class="json-str">["C++", "Dart", "SQL", "HTML", "CSS", "JavaScript"]</span><span class="json-punc">,</span></div>
-<div class="json-line indent"><span class="json-key">"mobile_development"</span><span class="json-punc">:</span> <span class="json-str">["Flutter", "Firebase", "REST APIs"]</span><span class="json-punc">,</span></div>
-<div class="json-line indent"><span class="json-key">"concepts"</span><span class="json-punc">:</span> <span class="json-str">["OOP", "Data Structures & Algorithms", "Software Engineering Principles", "AI/ML Fundamentals"]</span><span class="json-punc">,</span></div>
-<div class="json-line indent"><span class="json-key">"tools"</span><span class="json-punc">:</span> <span class="json-str">["VS Code", "Android Studio", "Git & GitHub"]</span><span class="json-punc">,</span></div>
-<div class="json-line indent"><span class="json-key">"databases"</span><span class="json-punc">:</span> <span class="json-str">["Firebase", "SQL", "Relational Databases"]</span><span class="json-punc">,</span></div>
-<div class="json-line indent"><span class="json-key">"design"</span><span class="json-punc">:</span> <span class="json-str">["UI/UX Design", "Graphic Designing"]</span><span class="json-punc">,</span></div>
-<div class="json-line indent"><span class="json-key">"office"</span><span class="json-punc">:</span> <span class="json-str">["MS Word", "Excel", "PowerPoint", "Data Entry"]</span></div>
-<div class="json-line"><span class="json-punc">}</span></div>
+    <div class="skills-grid reveal">
+      <div class="skill-cat">
+        <div class="skill-key">languages</div>
+        <div class="skill-chips">
+          <span class="chip">C++</span><span class="chip">Dart</span><span class="chip">SQL</span><span class="chip">HTML</span><span class="chip">CSS</span><span class="chip">JavaScript</span>
+        </div>
+      </div>
+      <div class="skill-cat">
+        <div class="skill-key">mobile_development</div>
+        <div class="skill-chips">
+          <span class="chip">Flutter</span><span class="chip">Firebase</span><span class="chip">REST APIs</span>
+        </div>
+      </div>
+      <div class="skill-cat">
+        <div class="skill-key">concepts</div>
+        <div class="skill-chips">
+          <span class="chip">OOP</span><span class="chip">Data Structures & Algorithms</span><span class="chip">Software Engineering Principles</span><span class="chip">AI/ML Fundamentals</span>
+        </div>
+      </div>
+      <div class="skill-cat">
+        <div class="skill-key">tools</div>
+        <div class="skill-chips">
+          <span class="chip">VS Code</span><span class="chip">Android Studio</span><span class="chip">Git & GitHub</span>
+        </div>
+      </div>
+      <div class="skill-cat">
+        <div class="skill-key">databases</div>
+        <div class="skill-chips">
+          <span class="chip">Firebase</span><span class="chip">SQL</span><span class="chip">Relational Databases</span>
+        </div>
+      </div>
+      <div class="skill-cat">
+        <div class="skill-key">design</div>
+        <div class="skill-chips">
+          <span class="chip">UI/UX Design</span><span class="chip">Graphic Designing</span>
+        </div>
+      </div>
+      <div class="skill-cat">
+        <div class="skill-key">office</div>
+        <div class="skill-chips">
+          <span class="chip">MS Word</span><span class="chip">Excel</span><span class="chip">PowerPoint</span><span class="chip">Data Entry</span>
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -382,6 +451,42 @@
   </div>
 </section>
 
+<section id="upcoming">
+  <div class="wrap">
+    <div class="eyebrow">upcoming.dart</div>
+    <h2 class="reveal">What's building next</h2>
+    <div class="project-card upcoming-card reveal">
+      <div>
+        <div class="project-title">SnapDoc <span class="status-badge">In Development</span></div>
+        <div class="project-sub">Photo-to-Document Converter · Personal Project · Flutter</div>
+        <div class="tags">
+          <span class="tag">Flutter</span>
+          <span class="tag">Image Processing</span>
+          <span class="tag">PDF Export</span>
+          <span class="tag">DOCX Export</span>
+        </div>
+        <ul class="bullets">
+          <li>Turns photos already sitting in the gallery straight into clean PDF or Word documents — no re-scanning needed.</li>
+          <li>Enhancement mode auto-corrects lighting, contrast, and sharpness before export.</li>
+          <li>Built-in reducer compresses file size for easy sharing, without visibly hurting quality.</li>
+          <li>Exported documents stay fully editable, not just flattened images.</li>
+        </ul>
+      </div>
+      <div class="phone">
+        <div class="phone-notch"></div>
+        <div class="doc-mock">
+          <div class="doc-line"></div>
+          <div class="doc-line"></div>
+          <div class="doc-line short"></div>
+          <div class="doc-line"></div>
+          <div class="doc-line short"></div>
+          <div class="doc-badge">PDF · DOCX</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <section id="education" style="padding-bottom:96px;">
   <div class="wrap">
     <div class="eyebrow">education.log</div>
@@ -422,19 +527,54 @@
   document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
   // Active tab highlight on scroll
-  const sections = ['about','skills','project','contact'].map(id => document.getElementById(id));
+  const sectionIds = ['about','skills','project','upcoming','contact'];
+  const sections = sectionIds.map(id => document.getElementById(id));
   const tabs = document.querySelectorAll('.tab');
   const tabObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if(entry.isIntersecting){
-        tabs.forEach(t => t.classList.remove('active'));
-        const match = document.querySelector('.tab.' + entry.target.id.replace('education','about'));
         const active = document.querySelector('.tab[href="#' + entry.target.id + '"]');
-        if(active) active.classList.add('active');
+        if(active){
+          tabs.forEach(t => t.classList.remove('active'));
+          active.classList.add('active');
+        }
       }
     });
   }, {threshold:0.4});
   sections.forEach(s => s && tabObserver.observe(s));
+
+  // Hero terminal typing effect
+  (function(){
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const targets = Array.from(document.querySelectorAll('#termBody [data-text]'));
+    const cursor = document.getElementById('heroCursor');
+    if(reduceMotion){
+      targets.forEach(t => { t.textContent = t.dataset.text; });
+      return;
+    }
+    targets.forEach(t => t.textContent = '');
+    let i = 0;
+    function typeNext(){
+      if(i >= targets.length) return;
+      const el = targets[i];
+      const text = el.dataset.text;
+      let c = 0;
+      const speed = 26;
+      const iv = setInterval(() => {
+        el.textContent += text[c];
+        c++;
+        if(c >= text.length){
+          clearInterval(iv);
+          if(el.parentElement && el.parentElement.id !== 'termBody' && el.nextSibling === null && cursor){
+            // no-op, cursor stays attached to DOM where placed
+          }
+          i++;
+          setTimeout(typeNext, 240);
+        }
+      }, speed);
+    }
+    typeNext();
+  })();
 </script>
 
 </body>
