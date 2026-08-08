@@ -192,8 +192,7 @@
   .section{padding:96px 0; border-top:1px solid var(--border);}
   .section h2{font-size:clamp(26px,3.4vw,36px); font-weight:700; margin-bottom:40px;}
 
-  .js .reveal{opacity:0; transform:translateY(22px); transition:opacity .7s ease, transform .7s ease;}
-  .reveal.in{opacity:1; transform:translateY(0);}
+  .reveal{opacity:1;}
 
   /* ===== About ===== */
   .about-grid{display:grid; grid-template-columns:1.25fr 1fr; gap:36px;}
@@ -264,7 +263,6 @@
 </style>
 </head>
 <body>
-<script>document.documentElement.classList.add('js');</script>
 
 <nav class="nav">
   <div class="nav-inner">
@@ -418,4 +416,6 @@
         </div>
         <span class="status-badge progress"><span class="dot amber"></span> In Development</span>
       </div>
-      <div 
+      <div class="tags"><span class="tag">Flutter</span><span class="tag">Image Processing</span><span class="tag">PDF Export</span><span class="tag">DOCX Export</span></div>
+      <ul class="bullets">
+   
